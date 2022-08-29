@@ -1,0 +1,9 @@
+# managed ssl gcp
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Values.nginx.cert_name }}
+spec:
+  domains:
+    - www.notejamdemo.com

@@ -1,0 +1,82 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.notejam.deployment_name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.notejam.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.notejam.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.notejam.app }}
+    spec:
+      serviceAccountName: {{ .Values.iam.k8s_service_account_name }}
+      securityContext:
+         fsGroup: 9999    
+      containers:
+      - name: {{ .Values.notejam.app }}
+        image: "{{ .Values.notejam.image.repository }}:{{ .Values.notejam.image.tag | default "latest" }}"
+        {{ if .Values.notejam.resources.enable }}
+        resources:
+          requests:
+            memory: {{ .Values.notejam.resources.requests.memory }}
+            cpu: {{ .Values.notejam.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.notejam.resources.limits.memory }}
+            cpu: {{ .Values.notejam.resources.limits.cpu }}
+        {{ end }}
+        imagePullPolicy: "{{ .Values.notejam.image.pullPolicy }}"
+        securityContext:
+          runAsUser : 1000
+          runAsGroup: 1000
+          readOnlyRootFilesystem: false
+          privileged: false
+        ports:
+        - containerPort: {{ .Values.notejam.port }}
+          protocol: TCP
+        env:      
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: "{{ $.Values.secrets.secret_name }}"
+                key: db-username
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: "{{ $.Values.secrets.secret_name }}"
+                key: db-password
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: "{{ $.Values.secrets.secret_name }}"
+                key: db-name
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: "{{ $.Values.secrets.secret_name }}"
+                key: db-host
+          - name: DB_PORT
+            value: {{ quote .Values.secrets.db_host_port }}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.notejam.service_name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+  labels:
+    app: {{ .Values.notejam.app }}
+spec:
+  selector:
+    app: {{ .Values.notejam.app }}
+  ports:
+  - name: http
+    port: {{ .Values.notejam.port }}
+    protocol: TCP
+    targetPort: {{ .Values.notejam.port }}
+

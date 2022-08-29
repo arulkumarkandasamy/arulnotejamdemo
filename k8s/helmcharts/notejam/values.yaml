@@ -1,0 +1,96 @@
+project_name: silken-network-252121
+
+psp:
+  cluster_role: notejam-psp-cluster-role
+  cluster_role_binding: notejam-psp-cluster-role-binding
+  enabled: true
+
+cloud_armor_policy_name: 
+
+# used with IAP
+iap:
+  # enable or disable iap for inbound requests [true:false]
+  enable_iap: true
+
+  oauth_client_credentials_k8s_secret_name: "notejam-oauth-secret"
+  oauth_client_key:
+  oauth_client_secret:
+  
+  
+# nginx configs
+nginx:
+  image:
+    repository:
+    tag: 
+    pullPolicy: IfNotPresent
+  resources:
+    enable:
+    requests:
+      memory: 
+      cpu: 
+    limits:
+      memory: 
+      cpu: 
+
+  # Nginx tls cert and key  
+  tls_crt:
+  tls_key:
+  # Nginx secret name
+  tls_secret_name: "notejam-nginx-tls-secret"
+
+  app: "notejam-nginx-app"
+  service_name: "notejam-nginx-service"
+  port: 8080
+  backend_config_name: "notejam-nginx-backend-config"
+  nginx_config_map: "notejam-nginx-config-map"
+  nginx_config_map_volume: "notejam-ngin-config-map-volume"
+  deployment_name: "notejam-nginx-deployment"
+
+ingress:
+  name: "trusted-zone-ingress-ui"
+  # front-end secret name
+  tls_secret_name: "notejam-ingress-tls-secret"
+  # golobal static ip address name
+  static_ip_name:
+  # front-end tls cert and key
+  tls_crt:
+  tls_key:
+  # public facing dns record
+  dns: 
+  allow_http: false
+
+
+iam: 
+  # related to workloadidentity (ex: ${module.trusted_zone_tenant_gke.service_account} )
+  google_service_account_name:
+  k8s_service_account_name: "notejam-sa"
+
+
+# -------------------------------------------------------------------------------
+
+frontend:
+  enabled: true
+  deployment_name : "notejam-deployment"
+  app: "notejam-app"
+  service_name: "notejam-service"
+  image:
+    repository:
+    tag: 
+    pullPolicy: IfNotPresent
+  # container port
+  port: 5000
+  replicas: 1
+  resources:
+    enable:
+    requests:
+      memory: 
+      cpu: 
+    limits:
+      memory: 
+      cpu: 
+
+secrets:
+  secret_name: secrets-notejam
+  db_host_port: "3306"
+
+

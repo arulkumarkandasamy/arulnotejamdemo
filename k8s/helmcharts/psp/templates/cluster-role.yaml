@@ -1,0 +1,35 @@
+{{ if .Values.strict }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: notejam-psp-cluster-role
+rules:
+  - apiGroups:
+      - extensions
+      - policy
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - notejam-strict-policy
+    verbs:
+      - use
+{{- else -}}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: notejam-psp-cluster-role
+rules:
+  - apiGroups:
+      - extensions
+      - policy
+    resources:
+      - podsecuritypolicies
+    resourceNames:
+      - notejam-baseline-policy
+    verbs:
+      - use
+{{- end }}
+
+---

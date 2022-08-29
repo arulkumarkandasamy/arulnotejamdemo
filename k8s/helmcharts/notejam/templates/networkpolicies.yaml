@@ -1,0 +1,51 @@
+{{- if .Values.networkPolicy.enabled -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-ingress
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-nginx-frontend-access
+spec:
+  podSelector:
+    matchLabels:
+      app: dtwin-app # label for ui frontend pods
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: dtwin-nginx-app # label for ui nginx pods   
+    ports:
+    - protocol: TCP
+      port: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-backend-access
+spec:
+  podSelector:
+    matchLabels:
+      app: dtwin-api # label for ui backend pods
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: dtwin-app # label for ui frontend pods   
+    ports:
+    - protocol: TCP
+      port: 80
+---
+
+{{- end }}
