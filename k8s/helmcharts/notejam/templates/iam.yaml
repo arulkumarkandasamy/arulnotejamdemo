@@ -5,11 +5,11 @@ metadata:
   annotations:
     iam.gke.io/gcp-service-account: {{ .Values.iam.google_service_account_name }}
   name: {{ .Values.iam.k8s_service_account_name }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     "app.kubernetes.io/managed-by": "Helm"
     "meta.helm.sh/release-name": "{{ .Release.Name }}"
-    "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
+    "meta.helm.sh/release-namespace": "{{ .Values.namespace }}"
 ---
 {{ if .Values.psp.enabled }}
 
@@ -18,17 +18,17 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ .Values.psp.cluster_role_binding }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
   labels:
     "app.kubernetes.io/managed-by": "Helm"
     "meta.helm.sh/release-name": "{{ .Release.Name }}"
-    "meta.helm.sh/release-namespace": "{{ .Release.Namespace }}"
+    "meta.helm.sh/release-namespace": "{{ .Values.namespace }}"
 subjects:
 # For all service accounts in a particular namespace
 - apiGroup: rbac.authorization.k8s.io
   kind: Group
   name: system:serviceaccounts
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ .Values.psp.cluster_role }}

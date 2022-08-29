@@ -1,5 +1,7 @@
 project_name: silken-network-252121
 
+namespace: notejam
+
 psp:
   cluster_role: notejam-psp-cluster-role
   cluster_role_binding: notejam-psp-cluster-role-binding
@@ -68,14 +70,14 @@ iam:
 
 # -------------------------------------------------------------------------------
 
-frontend:
+notejam:
   enabled: true
   deployment_name : "notejam-deployment"
   app: "notejam-app"
   service_name: "notejam-service"
   image:
-    repository:
-    tag: 
+    repository: gcr.io/silken-network-252121/notejam
+    tag: 0.1
     pullPolicy: IfNotPresent
   # container port
   port: 5000

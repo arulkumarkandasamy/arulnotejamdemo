@@ -1,0 +1,19 @@
+Architecture
+GCP Infrastructure
+	Architecture diagram with VPC, GKE, Cloud SQL and Buckets
+	VPC Network Details
+		Private Subnet
+		Cloud NAT
+		Firewall rules
+		Cloud Armor
+		IAP
+	GKE cluster Details
+		Regional cluster supports high availability
+	Cloud Storage
+		Multi region cloud storage buckets
+		Storing application configuration in buckets
+		
+		86.159.161.228
+	
+
+

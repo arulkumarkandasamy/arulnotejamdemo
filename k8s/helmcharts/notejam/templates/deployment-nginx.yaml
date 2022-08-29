@@ -3,7 +3,7 @@
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
   name: {{ .Values.nginx.backend_config_name }}
 spec:
   timeoutSec: 40
@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
   name: {{ .Values.nginx.service_name }}
   annotations:
     cloud.google.com/neg: '{"ingress": true}' # Creates an NEG native LB Container after an Ingress is created
@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
   name: {{ .Values.nginx.nginx_config_map }}
 data:
   proxy.conf: |
@@ -46,7 +46,7 @@ data:
       client_max_body_size 1G;
 
       location / {
-        proxy_pass http://{{ .Values.notejam.service_name }}.{{ .Release.Namespace }}.svc.cluster.local/;
+        proxy_pass http://{{ .Values.notejam.service_name }}.{{ .Values.namespace }}.svc.cluster.local/;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header Host {{ .Values.ingress.dns }};
@@ -60,7 +60,7 @@ data:
       }
 
       location /ui/ {
-        proxy_pass http://{{ .Values.notejam.service_name }}.{{ .Release.Namespace }}.svc.cluster.local/api/;
+        proxy_pass http://{{ .Values.notejam.service_name }}.{{ .Values.namespace }}.svc.cluster.local/api/;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header Host {{ .Values.ingress.dns }};        
@@ -78,7 +78,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ .Values.namespace }}
   name: {{ .Values.nginx.deployment_name }}
 spec:
   replicas: 1
