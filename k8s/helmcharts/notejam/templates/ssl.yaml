@@ -6,4 +6,4 @@ metadata:
   name: {{ .Values.nginx.cert_name }}
 spec:
   domains:
-    - www.notejamdemo.com
+    - wwwarulnotejamdemo.godaddysites.com
